@@ -1,0 +1,2 @@
+Hello async node js
+This the appended content to the async file

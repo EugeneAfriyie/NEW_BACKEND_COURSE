@@ -1,0 +1,2 @@
+HellO from node js Eugene
+This the added new content to the file

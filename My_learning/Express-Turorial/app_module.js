@@ -21,10 +21,10 @@ app.post('api/data', (req, res) => {
   res.send('POST request to the /api/data endpoint');
 });
 
-app.use(err,req,res,next) =>{
+app.use((err,req,res,next) =>{
     console.log(err.stsck);
     res.status(500).send('Internal Server Error');
-}
+})
 
 app.listen(port, () => {
   console.log(`Express server is running at http://localhost:${port}`);

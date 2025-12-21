@@ -1,0 +1,4 @@
+0QiuEu4KvcYYu5gQ
+
+username = groupeight00_db_user
+password = 7CggjzCIuabnSThJ

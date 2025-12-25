@@ -2,3 +2,9 @@
 
 username = groupeight00_db_user
 password = 7CggjzCIuabnSThJ
+I3XokqlQllR34ASt
+
+
+
+npm i nodemon  --save-dev  
+npm i express mongoose dotenv

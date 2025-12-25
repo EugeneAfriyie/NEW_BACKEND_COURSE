@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
 
 
 // create user model 
-const User = mongoose.model('User',  userSchema)
+const User = mongoose.model('User', userSchema)
 
 async function runQuery(){
     try {

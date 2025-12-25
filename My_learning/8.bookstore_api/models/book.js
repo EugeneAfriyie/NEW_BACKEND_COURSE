@@ -1,32 +1,27 @@
-const  mongoose = require("mongoose");
-
+const mongoose = require("mongoose");
 
 const BookSchema = new mongoose.Schema({    
-
     title: {
-        type:String,
-        require: [true, "Book title is required"],
-        trim : true,
-        kMaxLength :   [100, "Book title cannot be more than 100"]
+        type: String,
+        required: [true, "Book title is required"],  // Fixed: require → required
+        trim: true,
+        maxLength: [100, "Book title cannot be more than 100"]  // Fixed: kMaxLength → maxLength
     },
     author: {
-        type:String,
-        require: [true, "Author name is required"],
-        trim : true,
-        
+        type: String,
+        required: [true, "Author name is required"],  // Fixed: require → required
+        trim: true,
     },
-    year:{
+    year: {
         type: Number,
         required: [true, "Publication year is required"],
-        min : [1000, " Year must be at least 1000"],
+        min: [1000, "Year must be at least 1000"],
         max: [new Date().getFullYear(), "Year cannot be in the future"]
     },
-    createdAt :{
-        type : Date,
-        default : Date.now
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
+});
 
-})
-
-
-module.exports = mongoose.model("Book", BookSchema)
+module.exports = mongoose.model("Book", BookSchema);

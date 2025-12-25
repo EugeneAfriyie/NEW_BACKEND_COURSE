@@ -5,7 +5,7 @@ const getAllBooks = async(req,res)=>{
         try {
             const allBooks = await book.find({})
             if(allBooks.length > 0){
-                res.status(201).json({
+                res.status(200).json({
                     success:true,
                     message: "Books fetched successfully",
                     data: allBooks
@@ -18,7 +18,7 @@ const getAllBooks = async(req,res)=>{
                 }
         } catch (error) {
             console.log(error)
-            res.status(404).json({
+            res.status(500).json({
                 success: false,
                 message:"Somehing went wrong!"
             })
@@ -27,7 +27,8 @@ const getAllBooks = async(req,res)=>{
 const getSingleBook = async(req,res)=>{
 
     try {
-        const bookId = req.params.id;
+        const bookId = req.params.id
+        ;
         const singlebook = await book.findById(bookId)
 
         if(!singlebook){
@@ -38,29 +39,37 @@ const getSingleBook = async(req,res)=>{
            })
         }
 
-         res.status(201).json({
+         res.status(200).json({
                 success:true,
                 message: `Book with id ${bookId} found sucessfully`,
                 data: singlebook
             })
     } catch (error) {
-        
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "Something went wrong! Please try again"
+        });
     }
 
 }
 const addNewBook = async(req,res)=>{
     try {
         const newBookFormData = req.body;
-        const newlyCreatedBook = await book.create(newBookFormData)
-        if(newBookFormData){
-          return res.status(201).json({
-                success: true,
-                message: "Book Added Succesully",
-                data: newlyCreatedBook
-            })
-        }
-    } catch (error) {
+        const newlyCreatedBook = await book.create(newBookFormData);
         
+        return res.status(201).json({
+            success: true,
+            message: "Book Added Successfully",
+            data: newlyCreatedBook
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "Something went wrong! Please try again"
+        });
     }
 }
 const deleteBook = async(req,res)=>{
@@ -77,13 +86,17 @@ const deleteBook = async(req,res)=>{
            })
         }
 
-         res.status(201).json({
+         res.status(200).json({
                 success:true,
                 message: `Book with id ${bookId} deleted sucessfully`,
                 data: deletedbook
             })
     } catch (error) {
-        
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "Something went wrong! Please try again"
+        });
     }
 
 
@@ -102,13 +115,17 @@ const updateBook = async(req,res)=>{
            })
         }
 
-         res.status(201).json({
+         res.status(200).json({
                 success:true,
                 message: `Book with id ${bookId} updated sucessfully`,
                 data: updatedbook
             })
     } catch (error) {
-        
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "Something went wrong! Please try again"
+        });
     }
 
 }

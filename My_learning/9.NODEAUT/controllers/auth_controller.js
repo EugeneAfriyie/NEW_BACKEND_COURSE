@@ -1,10 +1,58 @@
-
+const User = require("../models/User");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 
 //  register controller
 
 const registerUser = async (req,res) =>{
     try {
+        // get user data from req body
+    const {username,email,password} = req.body;
+
+    // check if user already exists
+    const checkUser = await User.findOne({$or:[{email},{username}]})
+    if(checkUser){
+        return res.status(400).json({
+            success: false,
+            message: "User already exists with this email or username "
+        })
+    }
+
+    // hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password,salt);
+
+    // Create new user
+
+    const newUser = new User({
+        username,
+        email,
+        password: hashedPassword
+    })
+
+    await newUser.save();
+
+    if(newUser){
+        return res.status(201).json({
+            success: true,
+            message: "User registered successfully",
+            user : {
+                id : newUser._id,
+                username : newUser.username,
+                email : newUser.email,
+                role : newUser.role
+            }
+        })
+    }else{
+        return res.status(400).json({
+            success: false,
+            message: "User registration failed"
+        })
+    }
+
+
+
         
     } catch (error) {
         console.log(error)
@@ -20,7 +68,42 @@ const registerUser = async (req,res) =>{
 
 const loginUser = async (req,res) =>{
        try {
+
+        const {email,password} = req.body;
+        // check if user exists
+        const user = await User.findOne({email})
+        if(!user){
+            return res.status(400).json({
+                success: false,
+                message: "Invalid user"
+            })
+        }
+
+        // check if password is correct
+
+        const isPasswordMatch = await bcrypt.compare(password,user.password);
+        if(!isPasswordMatch){
+            return res.status(400).json({
+                success: false,
+                message: "Invalid Password"
+            })
+        }
         
+
+        // create session or token here (not implemented)
+        const token = jwt.sign({userId: user._id, role: user.role,username: user.username}, process.env.JWT_SECRET_key, {expiresIn: '1h'}) 
+
+        res.status(200).json({
+            success: true,
+            message: "User logged in successfully",
+            user : {
+                id : user._id,
+                username : user.username,
+                email : user.email,
+                role : user.role,
+                token : token
+            }
+        })
     } catch (error) {
         console.log(error)
         res.status(500).json({

@@ -6,7 +6,7 @@ const router = express.Router();
 
 // all routes related to user authentication and authorization
 router.post("/register", registerUser)
-router.get("/login", loginUser)
+router.post("/login", loginUser)
 
 
-
+module.exports = router;

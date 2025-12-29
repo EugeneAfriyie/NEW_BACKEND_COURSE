@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 const registerUser = async (req,res) =>{
     try {
         // get user data from req body
-    const {username,email,password} = req.body;
+    const {username,email,password,role} = req.body;
 
     // check if user already exists
     const checkUser = await User.findOne({$or:[{email},{username}]})
@@ -28,7 +28,8 @@ const registerUser = async (req,res) =>{
     const newUser = new User({
         username,
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        role: role || 'user'// default role is user
     })
 
     await newUser.save();
@@ -97,7 +98,7 @@ const loginUser = async (req,res) =>{
             success: true,
             message: "User logged in successfully",
             user : {
-                
+
                 id : user._id,
                 username : user.username,
                 email : user.email,
@@ -114,4 +115,25 @@ const loginUser = async (req,res) =>{
     }
 }
 
-module.exports = {registerUser,loginUser}
+
+
+const getallUsers = async (req,res) =>{
+    try {
+        const users = await User.find({});
+        res.status(200).json({
+            success: true,
+            message: "All users fetched successfully",
+            users: users
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: " something went wrong"
+        })
+    }
+}
+
+
+
+module.exports = {registerUser,loginUser,getallUsers};

@@ -7,6 +7,6 @@ const uploadImageController = require('../controllers/image_controller');
 
 
 // Upload the img 
-router.post("/upload,",authMiddleware,adminMiddleware,uploadMiddleware.single("image"),uploadImageController);
+router.post("/upload",authMiddleware,adminMiddleware,uploadMiddleware.single("image"),uploadImageController);
 
 module.exports.uploadImageRoutes = router;

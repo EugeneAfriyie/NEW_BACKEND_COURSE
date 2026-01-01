@@ -13,6 +13,8 @@
             })
         }
 
+         console.log(req.file);
+
         // upload to cloudinary
         const {url,public_id} = await uploadToCloudinary(req.file.path)
 

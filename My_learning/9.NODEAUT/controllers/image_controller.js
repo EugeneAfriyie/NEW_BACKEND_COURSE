@@ -1,8 +1,8 @@
- const image = require("../models/image");
+ const Image = require("../models/image");
  const {uploadToCloudinary} = require("../helpers/cloudinaryHelper")
 
 
- const uploadImage = async (req,res)  =>{
+ const uploadImageController = async (req,res)  =>{
     try {
         // check of file is missing
 
@@ -17,7 +17,7 @@
         const {url,public_id} = await uploadToCloudinary(req.file.path)
 
         // save to database(URL,public_id,uploadBy)
-        const newlyUploadedImage = new image({
+        const newlyUploadedImage = new Image({
             url,
             public_id,
             uploadBy : req.userinfo.userId
@@ -39,4 +39,4 @@
     }
  }
 
-    module.exports = {uploadImage};
+    module.exports = uploadImageController;

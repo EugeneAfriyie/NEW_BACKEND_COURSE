@@ -116,6 +116,56 @@ const loginUser = async (req,res) =>{
 }
 
 
+const changeUserPassword = async (req,res) =>{
+    try {
+        const {oldPassword,newPassword} = req.body;
+        const userId = req.userinfo.userId;
+
+        // check if user exists
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            })
+        }
+        // check if old password is correct
+        const isPasswordMatch = await bcrypt.compare(oldPassword,user.password);
+        if(!isPasswordMatch){
+            return res.status(400).json({
+                success: false,
+                message: "Invalid old Password"
+            })
+        }
+        // hash new password
+        if (newPassword.length < 6) {
+            return res.status(400).json({
+                success: false,
+                message: "New password must be at least 6 characters long"
+            });
+        }
+        
+        const salt = await bcrypt.genSalt(10);
+        const hashedNewPassword = await bcrypt.hash(newPassword,salt);
+
+        // update password
+        user.password = hashedNewPassword;
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Password changed successfully"
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({  
+            success: false,
+            message: " something went wrong"
+        })
+    }
+}
+
+
 
 const getallUsers = async (req,res) =>{
     try {
@@ -136,4 +186,4 @@ const getallUsers = async (req,res) =>{
 
 
 
-module.exports = {registerUser,loginUser,getallUsers};
+module.exports = {registerUser,loginUser,getallUsers,changeUserPassword};

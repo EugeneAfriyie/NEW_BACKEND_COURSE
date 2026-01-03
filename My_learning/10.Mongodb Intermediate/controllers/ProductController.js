@@ -48,7 +48,7 @@ const getProductstats = async (req, res) => {
         // stage 1 
         {
           $match: {
-            category: "Electronics",
+          
             inStock: true,
             price: { $gte: 100 }
           },

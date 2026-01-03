@@ -1,6 +1,87 @@
 const { model } = require("mongoose");
 const Product = require("../models/Product")
 
+const getProductAnalysis = async (req, res) => {
+  try {
+    const result = await Product.aggregate([
+        { $match: { category: "Electronics" } },
+        {
+          $group: {
+            _id: null,
+            totalRevenue: { $sum: "$price" },
+            averagePrice: { $avg: "$price" },
+            maxProductPrice: { $max: "$price" },
+            minProductPrice: { $min: "$price" },
+          }
+        },
+
+          {
+            $project: {
+                _id : 0,
+                totalRevenue: 1,
+                averagePrice: 1,
+                maxProductPrice: 1,
+                minProductPrice: 1,
+                priceRange: { $subtract: ["$maxProductPrice", "$minProductPrice"] }
+          }
+        },
+      ]);   
+    res.status(200).json({
+        success: true,
+        data: result,
+    });
+  } catch (e) {
+    console.error("Error in getProductAnalysis:", e);
+    res.status(500).json({
+      success: false,
+      message: "Some error occured!",
+    });
+  }
+};
+
+
+const getProductstats = async (req, res) => {
+  try {
+
+    const result = await Product.aggregate([
+
+        // stage 1 
+        {
+          $match: {
+            category: "Electronics",
+            inStock: true,
+            price: { $gte: 100 }
+          },
+        },
+
+        // stage 2 : group documents
+        {
+            $group: {
+                _id: "$category",
+                totalRevenue: {
+                    $sum: "$price"
+                },
+                averagePrice: {
+                    $avg: "$price"
+                },
+                count: { $sum: 1 }
+        }
+    }
+        
+    ])
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+
+
+    } catch (e) {
+    res.status(500).json({
+      success: false,
+      message: "Some error occured!",
+    });
+  }
+};
 
 const insertProduct = async (req, res) => {
     try {
@@ -45,7 +126,7 @@ const insertProduct = async (req, res) => {
     const result = await Product.insertMany(sampleProducts);
     res.status(201).json({
         success:true,
-        data: result
+        data: `Products inserted successfully: ${result.length} products added.`
     });
 
         
@@ -60,4 +141,4 @@ const insertProduct = async (req, res) => {
 }
 
 
-module.exports = {insertProduct};
+module.exports = {insertProduct, getProductAnalysis, getProductstats};

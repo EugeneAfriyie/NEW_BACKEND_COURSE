@@ -1,6 +1,7 @@
  const Image = require("../models/image");
  const {uploadToCloudinary} = require("../helpers/cloudinaryHelper")
 const fs = require("fs");
+const cloudinary = require("cloudinary").v2;
 
  const uploadImageController = async (req,res)  =>{
     try {
@@ -70,6 +71,65 @@ const fs = require("fs");
     }
  }
 
+ const imageDeleteController = async (req,res) =>{
+    try {
+        const imageId = req.params.id;
+
+        const userId = req.userinfo.userId;
+        const image = await Image.findById(imageId);
+        if(!image){
+            return res.status(404).json({
+                success: false,
+                message: "Image not found"
+            });
+        }
+
+        if(image.uploadBy.toString() !== userId){
+            return res.status(403).json({
+                success: false,
+                message: "You are not authorized to delete this image"
+            });
+        }
+
+        // Delete from cloudinary/
+        await cloudinary.uploader.destroy(image.public_id);
+
+        // delete from database
+        await Image.findByIdAndDelete(imageId);
+
+        res.status(200).json({
+            success: true,
+            message: "Image deleted successfully"
+        });
+        
 
 
-    module.exports = {uploadImageController,fetchAllImagesController};
+
+
+
+        // const image = await Image.findById(imageId);
+        // if(!image){
+        //     return res.status(404).json({
+        //         success: false,
+        //         message: "Image not found"
+        //     });
+        // }
+        // await image.remove();
+        // res.status(200).json({
+        //     success: true,
+        //     message: "Image deleted successfully"
+        // });
+    } catch (error) {
+        console.error("Error deleting image:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error" 
+        });
+    }
+ }
+
+
+
+
+
+    module.exports = {uploadImageController,fetchAllImagesController,deleteImageController};

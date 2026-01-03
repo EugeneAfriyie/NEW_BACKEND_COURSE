@@ -52,7 +52,7 @@ const cloudinary = require("cloudinary").v2;
  const fetchAllImagesController = async (req,res) =>{
 
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 2;
     const skip = (page - 1) * limit;
     const sortedBy = req.query.sortedBy || 'createdAt';
     const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
@@ -73,7 +73,7 @@ const cloudinary = require("cloudinary").v2;
             success: true,
             images,
             totalPages,
-            totaImages,
+            totalImages,
             currentPage: page
         });
     } catch (error) {

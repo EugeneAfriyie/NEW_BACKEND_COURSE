@@ -50,8 +50,19 @@ const cloudinary = require("cloudinary").v2;
 
 
  const fetchAllImagesController = async (req,res) =>{
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const sortedBy = req.query.sortedBy || 'createdAt';
+    const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
+    const totalImages = await Image.countDocuments();
+    const totalPages = Math.ceil(totalImages / limit)
+    const sortedObj = {} 
+    sortedObj[sortedBy] = sortOrder
+
     try {
-        const images = await Image.find({});
+        const images = await Image.find().sort(sortedObj).skip(skip).limit(limit);
         if(images.length === 0){
             return res.status(404).json({
                 success: false,
@@ -60,7 +71,10 @@ const cloudinary = require("cloudinary").v2;
         }
         res.status(200).json({
             success: true,
-            images
+            images,
+            totalPages,
+            totaImages,
+            currentPage: page
         });
     } catch (error) {
         console.error("Error fetching images:", error);
@@ -128,8 +142,29 @@ const cloudinary = require("cloudinary").v2;
     }
  }
 
+//  getallImage Controller
+const getAllImagesController = async (req, res) => {
+    try {
+        const images = await Image.find({});    
+        res.status(200).json({
+            success: true,
+            images
+        });
+    } catch (error) {
+        console.error("Error fetching images:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error" 
+        });
+    }
+}
 
 
 
 
-    module.exports = {uploadImageController,fetchAllImagesController,deleteImageController};
+
+
+
+
+
+    module.exports = {uploadImageController,fetchAllImagesController,imageDeleteController,getAllImagesController};

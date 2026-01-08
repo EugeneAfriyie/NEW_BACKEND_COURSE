@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chat app</title>
+</head>
+<body>
+    <div class="" id="user-list">
+        <h3>Online Users</h3>
+        <ul id="users"></ul>
+    </div>
+
+    <div class="" id="chat"></div>
+    <form action="" id="message-form">
+        <input type="text"
+       placeholder="Enter your message"
+       required
+       > 
+       <button type="submit">Send</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const messageForm = document.getElementById('message-form');
+        const messageInput = messageForm.querySelector('input');
+        const chat = document.getElementById('chat');
+        const userList = document.getElementById('users');
+    </script>
+</body>
+</html>

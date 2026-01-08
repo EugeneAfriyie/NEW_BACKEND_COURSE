@@ -4,11 +4,10 @@ const Book = require('../models/Book')
 
 const createdAuthor = async (req, res) => {
   try {
-    const { name, age, bio } = req.body;
+    const { name, bio } = req.body;
 
     const author = new Author({ 
         name,
-        age,
         bio
     });
     const savedAuthor = await author.save();
@@ -52,4 +51,35 @@ const createBook = async (req, res) => {
 };
 
 
-module.exports = {createdAuthor, createBook};
+
+const getBookWithAuthor =  async (req,res) =>{
+  try {
+
+    const book = await Book.findById (req.params.id).populate("author")
+    if(!book){
+      return res.status(404).json({
+        success : false,
+        message: "Book Not found"
+
+      })
+    }
+
+    res.status(201).json({
+        success : true,
+        data: book
+
+      })
+    
+  } catch (error ) {
+    console.error("Error creating book:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+
+
+}
+
+
+module.exports = {createdAuthor, createBook,getBookWithAuthor };

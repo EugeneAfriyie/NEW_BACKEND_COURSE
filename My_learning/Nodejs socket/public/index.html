@@ -36,6 +36,14 @@
         socket.on("userJoin" , (user) =>{
                 addMessage(`${user} has joined the chat`)
         })
+        socket.on("userList" , (users) =>{
+            userList.innerHTML = ""
+            users.forEach(user => {
+                const li = document.createElement("li")
+                li.textContent = user
+                userList.appendChild(li)
+            });
+        })
 
 
         function addMessage(input){

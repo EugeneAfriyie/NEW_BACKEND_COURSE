@@ -7,7 +7,7 @@
  const app = express()
  const server = http.createServer(app)
 
-//  initiate socket io
+//  initiate socket io  NAD ATTACH TO THE HTTP SERVER
  const io = socketio(server)
  app.use(express.json())
 
@@ -28,7 +28,7 @@
 
                 // send the updated user list to all users
 
-                oi.emit("userList",Array.from(users))
+                io.emit("userList",Array.from(users))
             })
 
 
@@ -47,6 +47,6 @@
 
     const PORT = process.env.PORT || 3000
 
-    app.listen(PORT, () =>{
+    server.listen(PORT, () =>{
         console.log("Server is runnig on port " + PORT)
     })

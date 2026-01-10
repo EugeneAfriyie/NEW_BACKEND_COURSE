@@ -17,7 +17,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
 app.use(express.json());
 
 app.use('/products', ProductRoutes);
-app.uxe('/books_reference ', BookRoutes);
+app.use('/books_reference ', BookRoutes);
 
 
 const port = process.env.PORT || 3000;

@@ -36,6 +36,12 @@
         socket.on("userJoin" , (user) =>{
                 addMessage(`${user} has joined the chat`)
         })
+
+
+        socket.on("userLeft" , (user) =>{
+                addMessage(`${user} has left the chat`)
+        })
+
         socket.on("userList" , (users) =>{
             userList.innerHTML = ""
             users.forEach(user => {
@@ -44,6 +50,29 @@
                 userList.appendChild(li)
             });
         })
+
+        // Listen for chat message event from the server
+
+        socket.on("chatMessage", (message) =>{
+            addMessage(`${message.userName}: ${message.text}`)
+        })
+
+
+        // handle submission of the message form
+        messageForm.addEventListener("submit" , (e) =>{
+            e.preventDefault();
+            const extractMessageText = messageinput.value;
+            if(extractMessageText){
+                socket.emit("chatMessage", {
+                    userName,text:extractMessageText
+                })
+
+                messageinput.value = ""
+            }
+
+        })
+
+
 
 
         function addMessage(input){
